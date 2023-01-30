@@ -29,6 +29,9 @@ NOTE: Add new changes BELOW THIS COMMENT.
   field under `dns` object in the configuration along with `dns64_prefixes`, the
   set of exclusion prefixes to filter AAAA responses.  The Well-Known Prefix
   (`64:ff9b::/96`) is used if no custom prefixes are specified.
+- The new HTTP API `POST /control/protection`, that updates protection state 
+  and adds an optional pause duration ([#1333]).  The format of request body
+  is described in `openapi/openapi.yaml`.
 
 ### Removed
 
@@ -39,6 +42,7 @@ NOTE: Add new changes BELOW THIS COMMENT.
   Correspondingly, the configuration parameter `beta_bind_port` has been removed
   as well.
 
+[#1333]: https://github.com/AdguardTeam/AdGuardHome/issues/1333
 [#5117]: https://github.com/AdguardTeam/AdGuardHome/issues/5117
 
 

@@ -94,6 +94,20 @@
       'responses':
         '200':
           'description': 'OK'
+  '/protection':
+    'post':
+      'tags':
+        - 'global'
+      'operationId': 'setProtection'
+      'summary': 'Set protection state and duration'
+      'requestBody':
+        'content':
+          'application/json':
+            'schema':
+              '$ref': '#/components/schemas/ProtectionInfo'
+      'responses':
+        '200':
+          'description': 'OK'
   '/cache_clear':
     'post':
       'tags':
@@ -1296,6 +1310,10 @@
           'type': 'string'
         'blocking_ipv6':
           'type': 'string'
+        'disabled_until':
+          'type': 'string'
+          'description': 'Protection is pause until this time.  Nullable.'
+          'example': '2018-11-26T00:02:41+03:00'
         'edns_cs_enabled':
           'type': 'boolean'
         'disable_ipv6':
@@ -2248,6 +2266,17 @@
           'type': 'integer'
           'format': 'uint16'
           'example': 80
+    'ProtectionInfo':
+      'type': 'object'
+      'description': 'Protection state configuration'
+      'properties':
+        'enabled':
+          'type': 'boolean'
+        'duration':
+          'type': 'number'
+      'required':
+        - 'enabled'
+        - 'duration'
     'ProfileInfo':
       'type': 'object'
       'description': 'Information about the current user'
