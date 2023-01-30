@@ -43,6 +43,7 @@ type jsonDNSConfig struct {
 	LocalPTRUpstreams *[]string     `json:"local_ptr_upstreams"`
 	BlockingIPv4      net.IP        `json:"blocking_ipv4"`
 	BlockingIPv6      net.IP        `json:"blocking_ipv6"`
+	DisabledUntil     *time.Time    `json:"disabled_until"`
 }
 
 func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
@@ -67,6 +68,7 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 	resolveClients := s.conf.ResolveClients
 	usePrivateRDNS := s.conf.UsePrivateRDNS
 	localPTRUpstreams := stringutil.CloneSliceOrEmpty(s.conf.LocalPTRResolvers)
+	disabledUntil := s.conf.DisabledUntil
 	var upstreamMode string
 	if s.conf.FastestAddr {
 		upstreamMode = "fastest_addr"
@@ -94,6 +96,7 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 		ResolveClients:    &resolveClients,
 		UsePrivateRDNS:    &usePrivateRDNS,
 		LocalPTRUpstreams: &localPTRUpstreams,
+		DisabledUntil:     disabledUntil,
 	}
 }
 
@@ -685,6 +688,32 @@ func (s *Server) handleCacheClear(w http.ResponseWriter, _ *http.Request) {
 	_, _ = io.WriteString(w, "OK")
 }
 
+// protectionJSON is an object for /control/protection endpoint.
+type protectionJSON struct {
+	Enabled  bool `json:"enabled"`
+	Duration uint `json:"duration"`
+}
+
+// handleSetProtection is a handler for the POST /control/protection HTTP API.
+func (s *Server) handleSetProtection(w http.ResponseWriter, r *http.Request) {
+	protectionReq := &protectionJSON{}
+	err := json.NewDecoder(r.Body).Decode(protectionReq)
+	if err != nil {
+		aghhttp.Error(r, w, http.StatusBadRequest, "reading req: %s", err)
+
+		return
+	}
+
+	disabledUntil := time.Now().Add(time.Duration(protectionReq.Duration) * time.Millisecond)
+
+	s.conf.ProtectionEnabled = protectionReq.Enabled
+	s.conf.DisabledUntil = &disabledUntil
+
+	s.conf.ConfigModified()
+
+	aghhttp.OK(w)
+}
+
 // handleDoH is the DNS-over-HTTPs handler.
 //
 // Control flow:
@@ -719,6 +748,7 @@ func (s *Server) registerHandlers() {
 	s.conf.HTTPRegister(http.MethodGet, "/control/dns_info", s.handleGetConfig)
 	s.conf.HTTPRegister(http.MethodPost, "/control/dns_config", s.handleSetConfig)
 	s.conf.HTTPRegister(http.MethodPost, "/control/test_upstream_dns", s.handleTestUpstreamDNS)
+	s.conf.HTTPRegister(http.MethodPost, "/control/protection", s.handleSetProtection)
 
 	s.conf.HTTPRegister(http.MethodGet, "/control/access/list", s.handleAccessList)
 	s.conf.HTTPRegister(http.MethodPost, "/control/access/set", s.handleAccessSet)

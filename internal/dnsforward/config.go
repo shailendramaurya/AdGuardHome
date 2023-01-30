@@ -70,6 +70,7 @@ type FilteringConfig struct {
 	BlockingIPv4       net.IP       `yaml:"blocking_ipv4"`        // IP address to be returned for a blocked A request
 	BlockingIPv6       net.IP       `yaml:"blocking_ipv6"`        // IP address to be returned for a blocked AAAA request
 	BlockedResponseTTL uint32       `yaml:"blocked_response_ttl"` // if 0, then default is used (3600)
+	DisabledUntil      *time.Time   `yaml:"disabled_until"`       // if set, the protection is disabled until
 
 	// IP (or domain name) which is used to respond to DNS requests blocked by parental control or safe-browsing
 	ParentalBlockHost     string `yaml:"parental_block_host"`
@@ -572,4 +573,19 @@ func (s *Server) onGetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, er
 		return nil, fmt.Errorf("invalid SNI")
 	}
 	return &s.conf.cert, nil
+}
+
+// updateProtectionEnabled updates protection state and returns it.
+func (s *Server) updateProtectionEnabled() (res bool) {
+	disabledUntil := s.conf.DisabledUntil
+	if disabledUntil != nil && time.Now().After(*disabledUntil) {
+		s.conf.ProtectionEnabled = true
+		s.conf.DisabledUntil = nil
+
+		s.conf.ConfigModified()
+
+		log.Info("dns: protection is restarted after pause.")
+	}
+
+	return s.conf.ProtectionEnabled
 }
