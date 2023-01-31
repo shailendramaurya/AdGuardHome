@@ -2276,7 +2276,7 @@
           'type': 'integer'
           'format': 'uint64'
       'required':
-        - 'duration'
+        - 'enabled'
     'ProfileInfo':
       'type': 'object'
       'description': 'Information about the current user'
