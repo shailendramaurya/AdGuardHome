@@ -104,7 +104,7 @@
         'content':
           'application/json':
             'schema':
-              '$ref': '#/components/schemas/ProtectionInfo'
+              '$ref': '#/components/schemas/SetProtectionRequest'
       'responses':
         '200':
           'description': 'OK'
@@ -2266,16 +2266,16 @@
           'type': 'integer'
           'format': 'uint16'
           'example': 80
-    'ProtectionInfo':
+    'SetProtectionRequest':
       'type': 'object'
       'description': 'Protection state configuration'
       'properties':
         'enabled':
           'type': 'boolean'
         'duration':
-          'type': 'number'
+          'type': 'integer'
+          'format': 'uint64'
       'required':
-        - 'enabled'
         - 'duration'
     'ProfileInfo':
       'type': 'object'

@@ -25,13 +25,13 @@ NOTE: Add new changes BELOW THIS COMMENT.
 
 ### Added
 
+- The new HTTP API `POST /control/protection`, that updates protection state
+  and adds an optional pause duration ([#1333]).  The format of request body
+  is described in `openapi/openapi.yaml`.
 - DNS64 support ([#5117]).  The function may be enabled with new `use_dns64`
   field under `dns` object in the configuration along with `dns64_prefixes`, the
   set of exclusion prefixes to filter AAAA responses.  The Well-Known Prefix
   (`64:ff9b::/96`) is used if no custom prefixes are specified.
-- The new HTTP API `POST /control/protection`, that updates protection state 
-  and adds an optional pause duration ([#1333]).  The format of request body
-  is described in `openapi/openapi.yaml`.
 
 ### Removed
 

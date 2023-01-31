@@ -8,6 +8,25 @@
 
 ## v0.107.23: API changes
 
+### New `"disabled_until"` field in `GET /control/dns_info` response
+
+* The new field `"disabled_until"` in `GET /control/dns_info` is the timestamp
+  until the protection is disabled.
+
+### `POST /control/protection`
+
+* The new `POST /control/protection` HTTP API allows to pause protection for
+  specified duration in milliseconds.
+
+This API accepts a JSON object with the following format:
+
+```json
+{
+  "enabled": false,
+  "duration": 10000
+}
+```
+
 ### Experimental “beta” APIs removed
 
 The following experimental beta APIs have been removed:
@@ -18,23 +37,6 @@ The following experimental beta APIs have been removed:
 
 They never quite worked properly, and the future new version of AdGuard Home API
 will probably be different.
-
-### New `"disabled_until"` field in `GET /control/dns_info` response
-
-* The new field `"disabled_until"` in `GET /control/dns_info` is the timestamp 
-  until the protection is disabled.
-
-* The new `POST /control/protection` HTTP API allows to pause protection for
-specified duration in milliseconds.
-
-This API accepts a JSON object with the following format:
-
-```json
-{
-  "enabled":"false",
-  "duration": "10000"
-}
-```
 
 
 
