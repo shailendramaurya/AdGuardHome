@@ -704,10 +704,22 @@ func (s *Server) handleSetProtection(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	disabledUntil := time.Now().Add(time.Duration(protectionReq.Duration) * time.Millisecond)
+	var disabledUntil *time.Time
+	if protectionReq.Duration > 0 {
+		if protectionReq.Enabled {
+			aghhttp.Error(r, w, http.StatusBadRequest, "invalid req: duration is not allowed for enabled")
 
+			return
+		}
+
+		calcTime := time.Now().Add(time.Duration(protectionReq.Duration) * time.Millisecond)
+		disabledUntil = &calcTime
+	}
+
+	s.serverLock.Lock()
 	s.conf.ProtectionEnabled = protectionReq.Enabled
-	s.conf.DisabledUntil = &disabledUntil
+	s.conf.DisabledUntil = disabledUntil
+	s.serverLock.Unlock()
 
 	s.conf.ConfigModified()
 
