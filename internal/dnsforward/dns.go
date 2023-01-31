@@ -10,6 +10,8 @@ import (
 	"github.com/AdguardTeam/AdGuardHome/internal/dhcpd"
 	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/proxy"
+	"github.com/AdguardTeam/dnsproxy/upstream"
+	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/stringutil"
@@ -419,7 +421,7 @@ func (s *Server) processDHCPHosts(dctx *dnsContext) (rc resultCode) {
 		}
 		resp.Answer = append(resp.Answer, a)
 	case dns.TypeAAAA:
-		if len(s.dns64Prefs) > 0 {
+		if s.dns64Pref != (netip.Prefix{}) {
 			// Respond with DNS64-mapped address for IPv4 host if DNS64 is
 			// enabled.
 			aaaa := &dns.AAAA{
@@ -466,15 +468,6 @@ func (s *Server) processRestrictLocal(dctx *dnsContext) (rc resultCode) {
 		log.Debug("dnsforward: request is for a service domain")
 
 		return resultCodeSuccess
-	}
-
-	if s.shouldStripDNS64(ip) {
-		// Strip the prefix from the address to get the original IPv4.
-		ip = ip[nat64PrefixLen:]
-
-		// Treat a DNS64-prefixed address as a locally served one since those
-		// queries should never be sent to the global DNS.
-		dctx.unreversedReqIP = ip
 	}
 
 	// Restrict an access to local addresses for external clients.  We also
@@ -671,11 +664,16 @@ func (s *Server) processUpstream(dctx *dnsContext) (rc resultCode) {
 		return resultCodeError
 	}
 
-	if dctx.err = prx.Resolve(pctx); dctx.err != nil {
-		return resultCodeError
-	}
+	if err := prx.Resolve(pctx); err != nil {
+		if errors.Is(err, upstream.ErrNoUpstreams) {
+			// Do not even put into querylog.
+			pctx.Res = s.genNXDomain(req)
 
-	if s.performDNS64(prx, dctx) == resultCodeError {
+			return resultCodeFinish
+		}
+
+		dctx.err = err
+
 		return resultCodeError
 	}
 
@@ -770,6 +768,8 @@ func (s *Server) filterAfterResponse(dctx *dnsContext, pctx *proxy.DNSContext) (
 	// Check the response only if it's from an upstream.  Don't check the
 	// response if the protection is disabled since dnsrewrite rules aren't
 	// applied to it anyway.
+	//
+	// TODO(e.burkov):  Reconsider the latter.
 	if !dctx.protectionEnabled || !dctx.responseFromUpstream || s.dnsFilter == nil {
 		return resultCodeSuccess
 	}
