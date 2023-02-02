@@ -29,7 +29,7 @@ NOTE: Add new changes BELOW THIS COMMENT.
   and adds an optional pause duration ([#1333]).  The format of request body
   is described in `openapi/openapi.yaml`.  The duration of this pause could
   also be set with the new config field `disabled_until` in `dns` section of
-  the yaml configuration file.
+  the YAML configuration file.
 
 <!--
 NOTE: Add new changes ABOVE THIS COMMENT.
