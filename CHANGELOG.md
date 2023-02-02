@@ -35,6 +35,7 @@ NOTE: Add new changes BELOW THIS COMMENT.
 
 - The icon for League Of Legends on the Blocked services page ([#5433]).
 
+[#1333]: https://github.com/AdguardTeam/AdGuardHome/issues/1333
 [#5433]: https://github.com/AdguardTeam/AdGuardHome/issues/5433
 
 <!--
@@ -68,7 +69,6 @@ See also the [v0.107.23 GitHub milestone][ms-v0.107.23].
   Correspondingly, the configuration parameter `beta_bind_port` has been removed
   as well.
 
-[#1333]: https://github.com/AdguardTeam/AdGuardHome/issues/1333
 [#5117]: https://github.com/AdguardTeam/AdGuardHome/issues/5117
 [#5245]: https://github.com/AdguardTeam/AdGuardHome/issues/5245
 [#5375]: https://github.com/AdguardTeam/AdGuardHome/issues/5375
