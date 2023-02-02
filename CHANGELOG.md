@@ -31,6 +31,12 @@ NOTE: Add new changes BELOW THIS COMMENT.
   also be set with the new config field `protection_disabled_until` in `dns`
   section of the YAML configuration file.
 
+### Fixed
+
+- The icon for League Of Legends on the Blocked services page ([#5433]).
+
+[#5433]: https://github.com/AdguardTeam/AdGuardHome/issues/5433
+
 <!--
 NOTE: Add new changes ABOVE THIS COMMENT.
 -->
@@ -43,11 +49,6 @@ See also the [v0.107.23 GitHub milestone][ms-v0.107.23].
 
 ### Added
 
-- The new HTTP API `POST /control/protection`, that updates protection state
-  and adds an optional pause duration ([#1333]).  The format of request body
-  is described in `openapi/openapi.yaml`.  The duration of this pause could
-  also be set with the new config field `protection_disabled_until` in `dns` section of
-  the yaml configuration file.
 - DNS64 support ([#5117]).  The function may be enabled with new `use_dns64`
   field under `dns` object in the configuration along with `dns64_prefixes`, the
   set of exclusion prefixes to filter AAAA responses.  The Well-Known Prefix
