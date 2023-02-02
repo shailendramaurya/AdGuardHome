@@ -577,25 +577,27 @@ func (s *Server) onGetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, er
 	return &s.conf.cert, nil
 }
 
-// updateProtectionEnabled updates protection state and returns it.
-func (s *Server) updateProtectionEnabled() (res bool) {
+// updatedProtectionStatus updates protection state, if needed, and returns it.
+func (s *Server) updatedProtectionStatus() (enabled bool) {
+	changed := false
+	defer func() {
+		if changed {
+			log.Info("dns: protection is restarted after pause")
+			s.conf.ConfigModified()
+		}
+	}()
+
 	s.serverLock.Lock()
+	defer s.serverLock.Unlock()
 
-	enabled := s.conf.ProtectionEnabled
 	disabledUntil := s.conf.DisabledUntil
-	if disabledUntil != nil && time.Now().After(*disabledUntil) {
-		enabled = true
-		s.conf.ProtectionEnabled = true
-		s.conf.DisabledUntil = nil
-
-		s.serverLock.Unlock()
-
-		s.conf.ConfigModified()
-
-		log.Info("dns: protection is restarted after pause")
-	} else {
-		s.serverLock.Unlock()
+	if disabledUntil == nil || time.Now().Before(*disabledUntil) {
+		return s.conf.ProtectionEnabled
 	}
 
-	return enabled
+	s.conf.ProtectionEnabled = true
+	s.conf.DisabledUntil = nil
+	changed = true
+
+	return true
 }

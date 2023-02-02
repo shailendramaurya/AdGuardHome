@@ -68,7 +68,13 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 	resolveClients := s.conf.ResolveClients
 	usePrivateRDNS := s.conf.UsePrivateRDNS
 	localPTRUpstreams := stringutil.CloneSliceOrEmpty(s.conf.LocalPTRResolvers)
-	disabledUntil := s.conf.DisabledUntil
+
+	var disabledUntil *time.Time
+	if s.conf.DisabledUntil != nil {
+		t := *s.conf.DisabledUntil
+		disabledUntil = &t
+	}
+
 	var upstreamMode string
 	if s.conf.FastestAddr {
 		upstreamMode = "fastest_addr"
@@ -707,7 +713,12 @@ func (s *Server) handleSetProtection(w http.ResponseWriter, r *http.Request) {
 	var disabledUntil *time.Time
 	if protectionReq.Duration > 0 {
 		if protectionReq.Enabled {
-			aghhttp.Error(r, w, http.StatusBadRequest, "invalid req: duration is not allowed for enabled")
+			aghhttp.Error(
+				r,
+				w,
+				http.StatusBadRequest,
+				"Setting a duration is only allowed with protection disabling",
+			)
 
 			return
 		}
