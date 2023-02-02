@@ -73,7 +73,7 @@ type FilteringConfig struct {
 
 	// ProtectionDisabledUntil is the timestamp until when the protection is
 	// disabled.
-	ProtectionDisabledUntil *time.Time `yaml:"protection_protection_disabled_until"`
+	ProtectionDisabledUntil *time.Time `yaml:"protection_disabled_until"`
 
 	// IP (or domain name) which is used to respond to DNS requests blocked by parental control or safe-browsing
 	ParentalBlockHost     string `yaml:"parental_block_host"`
