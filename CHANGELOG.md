@@ -23,6 +23,14 @@ See also the [v0.107.24 GitHub milestone][ms-v0.107.24].
 NOTE: Add new changes BELOW THIS COMMENT.
 -->
 
+### Added
+
+- The new HTTP API `POST /control/protection`, that updates protection state
+  and adds an optional pause duration ([#1333]).  The format of request body
+  is described in `openapi/openapi.yaml`.  The duration of this pause could
+  also be set with the new config field `disabled_until` in `dns` section of
+  the yaml configuration file.
+
 <!--
 NOTE: Add new changes ABOVE THIS COMMENT.
 -->

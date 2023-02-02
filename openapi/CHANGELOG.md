@@ -6,7 +6,7 @@
 
 
 
-## v0.107.23: API changes
+## v0.107.24: API changes
 
 ### New `"disabled_until"` field in `GET /control/dns_info` response
 
@@ -26,6 +26,10 @@ This API accepts a JSON object with the following format:
   "duration": 10000
 }
 ```
+
+
+
+## v0.107.23: API changes
 
 ### Experimental “beta” APIs removed
 
