@@ -71,8 +71,9 @@ type FilteringConfig struct {
 	BlockingIPv6       net.IP       `yaml:"blocking_ipv6"`        // IP address to be returned for a blocked AAAA request
 	BlockedResponseTTL uint32       `yaml:"blocked_response_ttl"` // if 0, then default is used (3600)
 
-	// DisabledUntil is the timestamp until when the protection is disabled.
-	DisabledUntil *time.Time `yaml:"disabled_until"`
+	// ProtectionDisabledUntil is the timestamp until when the protection is
+	// disabled.
+	ProtectionDisabledUntil *time.Time `yaml:"protection_protection_disabled_until"`
 
 	// IP (or domain name) which is used to respond to DNS requests blocked by parental control or safe-browsing
 	ParentalBlockHost     string `yaml:"parental_block_host"`
@@ -577,7 +578,8 @@ func (s *Server) onGetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, er
 	return &s.conf.cert, nil
 }
 
-// updatedProtectionStatus updates protection state, if needed, and returns it.
+// updatedProtectionStatus updates protection state, if the protection was
+// disabled temporarily.  Returns the updated state of protection.
 func (s *Server) updatedProtectionStatus() (enabled bool) {
 	changed := false
 	defer func() {
@@ -590,13 +592,13 @@ func (s *Server) updatedProtectionStatus() (enabled bool) {
 	s.serverLock.Lock()
 	defer s.serverLock.Unlock()
 
-	disabledUntil := s.conf.DisabledUntil
+	disabledUntil := s.conf.ProtectionDisabledUntil
 	if disabledUntil == nil || time.Now().Before(*disabledUntil) {
 		return s.conf.ProtectionEnabled
 	}
 
 	s.conf.ProtectionEnabled = true
-	s.conf.DisabledUntil = nil
+	s.conf.ProtectionDisabledUntil = nil
 	changed = true
 
 	return true

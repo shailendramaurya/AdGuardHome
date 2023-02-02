@@ -12,7 +12,7 @@
       "2620:fe::fe:10"
     ],
     "protection_enabled": true,
-    "disabled_until": null,
+    "protection_disabled_until": null,
     "ratelimit": 0,
     "blocking_mode": "default",
     "blocking_ipv4": "",
@@ -42,7 +42,7 @@
       "2620:fe::fe:10"
     ],
     "protection_enabled": true,
-    "disabled_until": null,
+    "protection_disabled_until": null,
     "ratelimit": 0,
     "blocking_mode": "default",
     "blocking_ipv4": "",
@@ -72,7 +72,7 @@
       "2620:fe::fe:10"
     ],
     "protection_enabled": true,
-    "disabled_until": null,
+    "protection_disabled_until": null,
     "ratelimit": 0,
     "blocking_mode": "default",
     "blocking_ipv4": "",

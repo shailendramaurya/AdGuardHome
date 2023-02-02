@@ -43,7 +43,7 @@ type jsonDNSConfig struct {
 	LocalPTRUpstreams *[]string     `json:"local_ptr_upstreams"`
 	BlockingIPv4      net.IP        `json:"blocking_ipv4"`
 	BlockingIPv6      net.IP        `json:"blocking_ipv6"`
-	DisabledUntil     *time.Time    `json:"disabled_until"`
+	DisabledUntil     *time.Time    `json:"protection_disabled_until"`
 }
 
 func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
@@ -70,8 +70,8 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 	localPTRUpstreams := stringutil.CloneSliceOrEmpty(s.conf.LocalPTRResolvers)
 
 	var disabledUntil *time.Time
-	if s.conf.DisabledUntil != nil {
-		t := *s.conf.DisabledUntil
+	if s.conf.ProtectionDisabledUntil != nil {
+		t := *s.conf.ProtectionDisabledUntil
 		disabledUntil = &t
 	}
 
@@ -729,7 +729,7 @@ func (s *Server) handleSetProtection(w http.ResponseWriter, r *http.Request) {
 
 	s.serverLock.Lock()
 	s.conf.ProtectionEnabled = protectionReq.Enabled
-	s.conf.DisabledUntil = disabledUntil
+	s.conf.ProtectionDisabledUntil = disabledUntil
 	s.serverLock.Unlock()
 
 	s.conf.ConfigModified()
