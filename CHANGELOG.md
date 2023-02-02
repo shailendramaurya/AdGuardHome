@@ -14,14 +14,24 @@ and this project adheres to
 <!--
 ## [v0.108.0] - TBA
 
-## [v0.107.23] - 2023-02-15 (APPROX.)
+## [v0.107.24] - 2023-02-22 (APPROX.)
 
-See also the [v0.107.23 GitHub milestone][ms-v0.107.23].
+See also the [v0.107.24 GitHub milestone][ms-v0.107.24].
 
-[ms-v0.107.23]: https://github.com/AdguardTeam/AdGuardHome/milestone/59?closed=1
+[ms-v0.107.24]: https://github.com/AdguardTeam/AdGuardHome/milestone/60?closed=1
 
 NOTE: Add new changes BELOW THIS COMMENT.
 -->
+
+<!--
+NOTE: Add new changes ABOVE THIS COMMENT.
+-->
+
+
+
+## [v0.107.23] - 2023-02-01
+
+See also the [v0.107.23 GitHub milestone][ms-v0.107.23].
 
 ### Added
 
@@ -35,6 +45,11 @@ NOTE: Add new changes BELOW THIS COMMENT.
   set of exclusion prefixes to filter AAAA responses.  The Well-Known Prefix
   (`64:ff9b::/96`) is used if no custom prefixes are specified.
 
+### Fixed
+
+- Filtering rules with `*` as the hostname not working properly ([#5245]).
+- Various dark theme bugs ([#5375]).
+
 ### Removed
 
 - The “beta frontend” and the corresponding APIs.  They never quite worked
@@ -46,6 +61,10 @@ NOTE: Add new changes BELOW THIS COMMENT.
 
 [#1333]: https://github.com/AdguardTeam/AdGuardHome/issues/1333
 [#5117]: https://github.com/AdguardTeam/AdGuardHome/issues/5117
+[#5245]: https://github.com/AdguardTeam/AdGuardHome/issues/5245
+[#5375]: https://github.com/AdguardTeam/AdGuardHome/issues/5375
+
+[ms-v0.107.23]: https://github.com/AdguardTeam/AdGuardHome/milestone/59?closed=1
 
 
 
@@ -1565,11 +1584,12 @@ See also the [v0.104.2 GitHub milestone][ms-v0.104.2].
 
 
 <!--
-[Unreleased]: https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.23...HEAD
-[v0.107.23]:  https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.22...v0.107.23
+[Unreleased]: https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.24...HEAD
+[v0.107.24]:  https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.23...v0.107.24
 -->
 
-[Unreleased]: https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.22...HEAD
+[Unreleased]: https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.23...HEAD
+[v0.107.23]:  https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.22...v0.107.23
 [v0.107.22]:  https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.21...v0.107.22
 [v0.107.21]:  https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.20...v0.107.21
 [v0.107.20]:  https://github.com/AdguardTeam/AdGuardHome/compare/v0.107.19...v0.107.20
