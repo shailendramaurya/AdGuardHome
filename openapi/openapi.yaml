@@ -1310,7 +1310,7 @@
           'type': 'string'
         'blocking_ipv6':
           'type': 'string'
-        'disabled_until':
+        'protection_disabled_until':
           'type': 'string'
           'description': 'Protection is pause until this time.  Nullable.'
           'example': '2018-11-26T00:02:41+03:00'
@@ -2275,6 +2275,7 @@
         'duration':
           'type': 'integer'
           'format': 'uint64'
+          'description': 'Duration of a pause, in milliseconds.  Enabled should be false.'
       'required':
         - 'enabled'
     'ProfileInfo':

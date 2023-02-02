@@ -8,10 +8,10 @@
 
 ## v0.107.24: API changes
 
-### New `"disabled_until"` field in `GET /control/dns_info` response
+### New `"protection_disabled_until"` field in `GET /control/dns_info` response
 
-* The new field `"disabled_until"` in `GET /control/dns_info` is the timestamp
-  until the protection is disabled.
+* The new field `"protection_disabled_until"` in `GET /control/dns_info` is the
+  timestamp until the protection is disabled.
 
 ### `POST /control/protection`
 
