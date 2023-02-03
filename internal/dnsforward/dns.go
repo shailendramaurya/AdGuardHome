@@ -666,7 +666,12 @@ func (s *Server) processUpstream(dctx *dnsContext) (rc resultCode) {
 
 	if err := prx.Resolve(pctx); err != nil {
 		if errors.Is(err, upstream.ErrNoUpstreams) {
-			// Do not even put into querylog.
+			// Do not even put into querylog.  Currently this happens either
+			// when the private resolvers enabled and the request is DNS64 PTR,
+			// or when the client isn't considered local by prx.
+			//
+			// TODO(e.burkov):  Make proxy detect local client the same way as
+			// AGH does.
 			pctx.Res = s.genNXDomain(req)
 
 			return resultCodeFinish

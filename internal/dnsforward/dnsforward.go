@@ -87,7 +87,9 @@ type Server struct {
 	// See https://github.com/adguardTeam/adGuardHome/issues/3185#issuecomment-851048135.
 	recDetector *recursionDetector
 
-	// dns64Prefs is the NAT64 prefix used for DNS64 response mapping.
+	// dns64Pref is the NAT64 prefix used for DNS64 response mapping.  The major
+	// part of DNS64 happens inside the [proxy] package, but there still are
+	// some places where response mapping is needed (e.g. DHCP).
 	dns64Pref netip.Prefix
 
 	// anonymizer masks the client's IP addresses if needed.
