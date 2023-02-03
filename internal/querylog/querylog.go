@@ -26,6 +26,9 @@ type QueryLog interface {
 
 	// WriteDiskConfig - write configuration
 	WriteDiskConfig(c *Config)
+
+	// ShouldLog decides if the q should be logged.
+	ShouldLog(q []dns.Question) bool
 }
 
 // Config is the query log configuration structure.
@@ -71,6 +74,10 @@ type Config struct {
 	// AnonymizeClientIP tells if the query log should anonymize clients' IP
 	// addresses.
 	AnonymizeClientIP bool
+
+	// Ignored is the list of host names, which are should not be written
+	// to log.
+	Ignored []string
 }
 
 // AddParams is the parameters for adding an entry.

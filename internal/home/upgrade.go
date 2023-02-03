@@ -22,7 +22,7 @@ import (
 )
 
 // currentSchemaVersion is the current schema version.
-const currentSchemaVersion = 14
+const currentSchemaVersion = 15
 
 // These aliases are provided for convenience.
 type (
@@ -87,6 +87,7 @@ func upgradeConfigSchema(oldVersion int, diskConf yobj) (err error) {
 		upgradeSchema11to12,
 		upgradeSchema12to13,
 		upgradeSchema13to14,
+		upgradeSchema14to15,
 	}
 
 	n := 0
@@ -797,6 +798,62 @@ func upgradeSchema13to14(diskConf yobj) (err error) {
 			DHCP:      true,
 			HostsFile: true,
 		},
+	}
+
+	return nil
+}
+
+// upgradeSchema14to15 performs the following changes:
+//
+//	# BEFORE:
+//	'dns':
+//	  'querylog_enabled': true
+//	  'querylog_file_enabled': true
+//	  'querylog_interval': 2160h
+//	  'querylog_size_memory': 1000
+//	  'anonymize_client_ip': false
+//
+//	# AFTER:
+//	'querylog':
+//	  'enabled': true
+//	  'file_enabled': true
+//	  'interval': '2160h'
+//	  'size_memory': 1000
+//	  'anonymize_client_ip': false
+//	  'ignored': []
+func upgradeSchema14to15(diskConf yobj) (err error) {
+	log.Printf("Upgrade yaml: 14 to 15")
+	diskConf["schema_version"] = 15
+
+	dnsVal := diskConf["dns"]
+	switch dns := dnsVal.(type) {
+	case map[string]any:
+		type temp struct {
+			from string
+			to   string
+			val  any
+		}
+		replaces := []temp{
+			{from: "querylog_enabled", to: "enabled", val: true},
+			{from: "querylog_file_enabled", to: "file_enabled", val: true},
+			{from: "querylog_interval", to: "interval", val: "2160h"},
+			{from: "querylog_size_memory", to: "size_memory", val: 1000},
+			{from: "anonymize_client_ip", to: "anonymize_client_ip", val: false},
+		}
+		qlog := map[string]any{
+			"ignored": []any{},
+		}
+		for _, r := range replaces {
+			v, ok := dns[r.from]
+			if !ok {
+				v = r.val
+			}
+			delete(dns, r.from)
+			qlog[r.to] = v
+		}
+		diskConf["querylog"] = qlog
+	default:
+		// Go on.
 	}
 
 	return nil

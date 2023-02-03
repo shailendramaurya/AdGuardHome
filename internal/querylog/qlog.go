@@ -247,3 +247,27 @@ func (l *queryLog) Add(params *AddParams) {
 		}()
 	}
 }
+
+// ShouldLog returns true if q should be logged.
+func (l *queryLog) ShouldLog(q []dns.Question) bool {
+	if len(q) == 0 {
+		return false
+	}
+
+	host := strings.ToLower(q[0].Name[:len(q[0].Name)-1])
+
+	return !l.isIgnored(host)
+}
+
+// isIgnored returns true if the host is in the Ignored list.
+func (l *queryLog) isIgnored(host string) bool {
+	ignored := l.conf.Ignored
+
+	for _, v := range ignored {
+		if host == v {
+			return true
+		}
+	}
+
+	return false
+}

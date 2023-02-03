@@ -41,7 +41,7 @@ func (s *Server) processQueryLogsAndStats(dctx *dnsContext) (rc resultCode) {
 	// Synchronize access to s.queryLog and s.stats so they won't be suddenly
 	// uninitialized while in use.  This can happen after proxy server has been
 	// stopped, but its workers haven't yet exited.
-	if shouldLog && s.queryLog != nil {
+	if shouldLog && s.queryLog != nil && s.queryLog.ShouldLog(msg.Question) {
 		s.logQuery(dctx, pctx, elapsed, ip)
 	}
 

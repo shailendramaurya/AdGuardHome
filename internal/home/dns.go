@@ -66,11 +66,12 @@ func initDNS() (err error) {
 		HTTPRegister:      httpRegister,
 		FindClient:        Context.clients.findMultiple,
 		BaseDir:           baseDir,
-		RotationIvl:       config.DNS.QueryLogInterval.Duration,
-		MemSize:           config.DNS.QueryLogMemSize,
-		Enabled:           config.DNS.QueryLogEnabled,
-		FileEnabled:       config.DNS.QueryLogFileEnabled,
-		AnonymizeClientIP: config.DNS.AnonymizeClientIP,
+		RotationIvl:       config.QueryLog.Interval.Duration,
+		MemSize:           config.QueryLog.MemSize,
+		Enabled:           config.QueryLog.Enabled,
+		FileEnabled:       config.QueryLog.FileEnabled,
+		AnonymizeClientIP: config.QueryLog.AnonymizeClientIP,
+		Ignored:           config.QueryLog.Ignored,
 	}
 	Context.queryLog = querylog.New(conf)
 

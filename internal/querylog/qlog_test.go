@@ -249,6 +249,61 @@ func TestQueryLogFileDisabled(t *testing.T) {
 	assert.Equal(t, "example2.org", ll[1].QHost)
 }
 
+func TestQueryLogShouldIgnore(t *testing.T) {
+	l := newQueryLog(Config{
+		Enabled:     true,
+		RotationIvl: timeutil.Day,
+		MemSize:     100,
+		BaseDir:     t.TempDir(),
+		Ignored: []string{
+			"ignor.ed",
+			"ignored.to",
+		},
+	})
+
+	testCases := []struct {
+		name    string
+		q       []dns.Question
+		wantLog bool
+	}{{
+		name: "log",
+		q: []dns.Question{{
+			Name:   "example.com.",
+			Qtype:  dns.TypeA,
+			Qclass: dns.ClassINET,
+		}},
+		wantLog: true,
+	}, {
+		name:    "no_log_no_question",
+		q:       []dns.Question{},
+		wantLog: false,
+	}, {
+		name: "no_log_ignored_1",
+		q: []dns.Question{{
+			Name:   "ignor.ed.",
+			Qtype:  dns.TypeA,
+			Qclass: dns.ClassINET,
+		}},
+		wantLog: false,
+	}, {
+		name: "no_log_ignored_2",
+		q: []dns.Question{{
+			Name:   "ignored.to.",
+			Qtype:  dns.TypeA,
+			Qclass: dns.ClassINET,
+		}},
+		wantLog: false,
+	}}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			res := l.ShouldLog(tc.q)
+
+			assert.Equal(t, tc.wantLog, res)
+		})
+	}
+}
+
 func addEntry(l *queryLog, host string, answerStr, client net.IP) {
 	q := dns.Msg{
 		Question: []dns.Question{{

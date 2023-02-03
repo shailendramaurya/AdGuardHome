@@ -540,7 +540,7 @@ func run(opts options, clientBuildFS fs.FS) {
 
 func (c *configuration) anonymizer() (ipmut *aghnet.IPMut) {
 	var anonFunc aghnet.IPMutFunc
-	if c.DNS.AnonymizeClientIP {
+	if c.QueryLog.AnonymizeClientIP {
 		anonFunc = querylog.AnonymizeIP
 	}
 

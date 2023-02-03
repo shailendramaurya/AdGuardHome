@@ -25,6 +25,9 @@ func (l *queryLog) entriesToJSON(entries []*logEntry, oldest time.Time) (res job
 
 	// The elements order is already reversed to be from newer to older.
 	for _, entry := range entries {
+		if l.isIgnored(entry.QHost) {
+			continue
+		}
 		jsonEntry := l.entryToJSON(entry, l.anonymizer.Load())
 		data = append(data, jsonEntry)
 	}

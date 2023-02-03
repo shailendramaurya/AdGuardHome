@@ -30,6 +30,11 @@ func (l *testQueryLog) Add(p *querylog.AddParams) {
 	l.lastParams = p
 }
 
+// ShouldLog implements the querylog.QueryLog interface for *testQueryLog.
+func (l *testQueryLog) ShouldLog([]dns.Question) bool {
+	return true
+}
+
 // testStats is a simple stats.Stats implementation for tests.
 type testStats struct {
 	// Stats is embedded here simply to make testStats a stats.Stats without
